@@ -114,7 +114,8 @@ function flag_entity_info() {
  *   The entity object, or FALSE if it can't be found.
  */
 function flagging_load($flagging_id, $reset = FALSE) {
-  $result = entity_load('flagging', array($flagging_id), array(), $reset);
+  $result = entity_load_multiple('flagging', array($flagging_id), array(), $reset);
+
   return reset($result);
 }
 
