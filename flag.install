@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Flag module install/schema/update hooks.
@@ -151,9 +150,21 @@ function flag_requirements($phase) {
 
   if ($phase == 'runtime') {
     if (module_exists('translation') && !module_exists('translation_helpers')) {
+      $severity = REQUIREMENT_WARNING;
+
+      // Check to see what the flags are flagging.
+      $flags = flag_get_flags();
+      foreach ($flags as $machine => $flag) {
+        if ($flag->entity_type == 'node') {
+          // Adjust severity for known translation problems.
+          $severity = REQUIREMENT_ERROR;
+          continue;
+        }
+      }
+
       $requirements['flag_translation'] = array(
         'title' => $t('Flag'),
-        'severity' => REQUIREMENT_ERROR,
+        'severity' => $severity,
         'description' => $t('To have the flag module work with translations, you need to install and enable the <a href="http://drupal.org/project/translation_helpers">Translation helpers</a> module.'),
         'value' => $t('Translation helpers module not found.'),
       );
