@@ -21,24 +21,28 @@ Backdrop.flagLink = function(context) {
    *   The new link.
    */
   function updateLink(element, newHtml) {
-    var $newLink = $(newHtml);
+    var $tempContainer = $('<div>').html(newHtml); // Wrap in a container
+    var $newLink = $tempContainer.find('.flag-wrapper').first(); // Extract the actual wrapper
 
     // Initially hide the message so we can fade it in.
     $('.flag-message', $newLink).css('display', 'none');
 
-    // Reattach the behavior to the new <A> element. This element
-    // is either whithin the wrapper or it is the outer element itself.
+    // Reattach the behavior to the new <A> element.
     var $nucleus = $newLink.is('a') ? $newLink : $('a.flag', $newLink);
     $nucleus.addClass('flag-processed').click(flagClick);
 
     // Find the wrapper of the old link.
     var $wrapper = $(element).parents('.flag-wrapper:first');
+
     // Replace the old link with the new one.
     $wrapper.after($newLink).remove();
     Backdrop.attachBehaviors($newLink.get(0));
 
     $('.flag-message', $newLink).fadeIn();
-    setTimeout(function(){ $('.flag-message.flag-auto-remove', $newLink).fadeOut() }, 3000);
+    setTimeout(function () {
+      $('.flag-message.flag-auto-remove', $newLink).fadeOut()
+    }, 3000);
+
     return $newLink.get(0);
   }
 
